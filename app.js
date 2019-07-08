@@ -11,12 +11,13 @@ const query = `
           }
         }
       }`;
-const makeQuery = query => {
-  return fetch('https://www.graphqlhub.com/graphql', {
+const makeQuery = async query => {
+  const response = await fetch('https://www.graphqlhub.com/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query }),
-  }).then(response => response.json());
+  });
+  return await response.json();
 };
 const sitebit = url => {
   return url.split('://')[1].split('/')[0];
@@ -27,13 +28,11 @@ getHourDifference = date => {
   let diff = Math.abs(Math.round((date2.getTime() - date1.getTime()) / 3600000));
   return diff;
 };
-let sec = document.querySelector('#addi');
+let main = document.querySelector('#mainlist');
 const ready = () => {
-  let newNod;
   makeQuery(query).then(res => {
-    console.log(res);
     res.data.hn.topStories.forEach(({ title, url, score, timeISO, descendants, by: { id } }, i) => {
-      sec.innerHTML += `<tr class="athing">
+      main.innerHTML += `<tr class="athing">
                   <td style="text-align:right;vertical-align:top" class="title"><span class="rank">${i + 1}</span></td>
                   <td style="vertical-align:top" class="votelinks">
                     <div style="text-align:center">
@@ -65,8 +64,8 @@ const ready = () => {
                 </tr>
                 <tr class="spacer" style="height:5px"></tr>`;
     });
-    // sec.innerHTML = newNod;
-    sec.innerHTML += `<tr class="morespace" style="height:10px"></tr>
+
+    main.innerHTML += `<tr class="morespace" style="height:10px"></tr>
                 <tr>
                   <td colspan="2"></td>
                   <td class="title"><a href="#" class="morelink" rel="nofollow">More</a></td>
